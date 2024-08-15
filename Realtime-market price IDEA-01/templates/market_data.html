@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Market Data</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        .card {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px;
+            display: inline-block;
+            width: calc(33% - 40px);
+        }
+        .card img {
+            max-width: 100%;
+            height: auto;
+        }
+        .card-body {
+            padding: 10px;
+        }
+        .card-title {
+            font-size: 1.25em;
+            margin: 0;
+        }
+        .card-text {
+            font-size: 1em;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Market Data</h1>
+
+    <form method="POST">
+        <label for="state">Filter by State:</label>
+        <select id="state" name="state">
+            <option value="">Select State</option>
+            {% for state in states %}
+                <option value="{{ state }}">{{ state }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="district">Filter by District:</label>
+        <select id="district" name="district">
+            <option value="">Select District</option>
+            {% for district in districts %}
+                <option value="{{ district }}">{{ district }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="commodity">Filter by Commodity:</label>
+        <select id="commodity" name="commodity">
+            <option value="">Select Commodity</option>
+            {% for commodity in commodities %}
+                <option value="{{ commodity }}">{{ commodity }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="variety">Filter by Variety:</label>
+        <select id="variety" name="variety">
+            <option value="">Select Variety</option>
+            {% for variety in varieties %}
+                <option value="{{ variety }}">{{ variety }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="grade">Filter by Grade:</label>
+        <select id="grade" name="grade">
+            <option value="">Select Grade</option>
+            {% for grade in grades %}
+                <option value="{{ grade }}">{{ grade }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="price_order">Price Order:</label>
+        <select id="price_order" name="price_order">
+            <option value="low_to_high">Low to High</option>
+            <option value="high_to_low">High to Low</option>
+        </select>
+
+        <button type="submit">Filter</button>
+    </form>
+
+    <p>Displaying {{ start + 1 }} to {{ end if end < total else total }} of {{ total }} entries</p>
+
+    {% for item in data %}
+        <div class="card">
+            <img src="https://via.placeholder.com/150" class="card-img-top" alt="{{ item['Variety'] }}">
+            <div class="card-body">
+                <h5 class="card-title">{{ item['Variety'] }}</h5>
+                <p class="card-text">
+                    State: {{ item['State'] }}<br>
+                    District: {{ item['District'] }}<br>
+                    Market: {{ item['Market'] }}<br>
+                    Commodity: {{ item['Commodity'] }}<br>
+                    Min Price: {{ item['Min_x0020_Price'] }}<br>
+                    Max Price: {{ item['Max_x0020_Price'] }}<br>
+                    Grade: {{ item['Grade'] }}<br>
+                    Arrival Date: {{ item['Arrival_Date'] }}
+                </p>
+            </div>
+        </div>
+    {% endfor %}
+
+    <div>
+        {% if page > 1 %}
+            <a href="?page={{ page - 1 }}{% if request.form.get('state') %}&state={{ request.form.get('state') }}{% endif %}{% if request.form.get('district') %}&district={{ request.form.get('district') }}{% endif %}{% if request.form.get('commodity') %}&commodity={{ request.form.get('commodity') }}{% endif %}{% if request.form.get('variety') %}&variety={{ request.form.get('variety') }}{% endif %}{% if request.form.get('price_order') %}&price_order={{ request.form.get('price_order') }}{% endif %}{% if request.form.get('grade') %}&grade={{ request.form.get('grade') }}{% endif %}">Previous</a>
+        {% endif %}
+        {% if page * per_page < total %}
+            <a href="?page={{ page + 1 }}{% if request.form.get('state') %}&state={{ request.form.get('state') }}{% endif %}{% if request.form.get('district') %}&district={{ request.form.get('district') }}{% endif %}{% if request.form.get('commodity') %}&commodity={{ request.form.get('commodity') }}{% endif %}{% if request.form.get('variety') %}&variety={{ request.form.get('variety') }}{% endif %}{% if request.form.get('price_order') %}&price_order={{ request.form.get('price_order') }}{% endif %}{% if request.form.get('grade') %}&grade={{ request.form.get('grade') }}{% endif %}">Next</a>
+        {% endif %}
+    </div>
+</body>
+</html>
